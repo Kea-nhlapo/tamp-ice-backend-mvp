@@ -6,15 +6,15 @@ This is a planning-level contract. Payload schemas, error fields and OpenAPI ann
 
 **Required role:** Public.
 
-**Purpose:** Register an allowed user role and exchange valid credentials for a JWT.
+**Purpose:** Register a Freight Owner or Transporter and exchange valid credentials for a JWT. Administrator accounts are created through synthetic seed data.
 
 **Expected main response:** Registration returns the created user's safe profile; login returns a token and basic identity information.
 
-**Important validation:** Email must be valid and unique, passwords must meet the implemented policy, and only supported roles may be selected. Passwords must never appear in responses.
+**Important validation:** Email must be valid and unique, passwords must meet the implemented policy, and public registration must accept only `FREIGHT_OWNER` or `TRANSPORTER`. A request selecting `ADMIN` must be rejected. Passwords must never appear in responses.
 
 | Method | Endpoint | Planned use |
 |---|---|---|
-| POST | `/api/auth/register` | Register a Freight Owner, Transporter or approved Admin flow |
+| POST | `/api/auth/register` | Register a Freight Owner or Transporter; public Admin registration is prohibited |
 | POST | `/api/auth/login` | Authenticate and obtain a JWT |
 
 ## Current user and compliance

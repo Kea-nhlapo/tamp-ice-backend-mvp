@@ -18,9 +18,11 @@ The backend will provide REST APIs, persistence, validation, authentication, rol
 - **Transporter:** posts and manages trucks, reviews matches, records decisions, updates trip progress and submits ratings.
 - **Administrator:** reviews users and compliance metadata, manages disputes, reads audit events and views metrics.
 
+Public registration is limited to `FREIGHT_OWNER` and `TRANSPORTER`. The API must reject attempts to select `ADMIN`; synthetic seed data will provide Administrator accounts for the MVP.
+
 ## Main workflow
 
-1. Register or log in with an allowed role.
+1. Register as a Freight Owner or Transporter, or log in with a synthetic seeded Administrator account.
 2. Create a load and a compatible available truck.
 3. Generate eligible matches using explicit rules.
 4. Accept a match and create a receipt, or reject it with a logged decision.

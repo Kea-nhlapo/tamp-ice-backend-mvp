@@ -8,7 +8,7 @@ This repository is an individual Industrial Computing Engineering (ICE) backend 
 
 ## MVP business journey
 
-1. A user registers with a role and signs in.
+1. A Freight Owner or Transporter registers and signs in. Administrator accounts come from synthetic MVP seed data.
 2. A Freight Owner posts a cargo load.
 3. A Transporter posts an available truck.
 4. The platform evaluates transparent matching rules and explains eligible matches.
@@ -23,6 +23,8 @@ This repository is an individual Industrial Computing Engineering (ICE) backend 
 - **Freight Owner:** manages cargo loads, match decisions, tracking and ratings.
 - **Transporter:** manages truck availability, match decisions, tracking and ratings.
 - **Administrator:** manages users, compliance metadata, disputes, audit events and metrics.
+
+Public registration accepts only `FREIGHT_OWNER` and `TRANSPORTER`. The public endpoint must reject `ADMIN`; Administrator accounts are created through synthetic seed data for this MVP.
 
 ## Planned technology stack
 
