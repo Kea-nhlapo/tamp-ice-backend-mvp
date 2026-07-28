@@ -1,8 +1,8 @@
 # GitHub Issue Backlog
 
-GitHub CLI authentication was unavailable when this foundation was prepared. Create these issues manually in the listed order. Nothing below is claimed as implemented.
+The linked GitHub issues are the implementation work queue. Nothing below is claimed as implemented.
 
-## 1. chore: Scaffold Spring Boot application and API documentation
+## 1. [chore: Scaffold Spring Boot application and API documentation](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/2)
 
 **Related requirements:** Foundation for FR-01–FR-12.
 
@@ -29,7 +29,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Domain workflows, production deployment and optional infrastructure.
 
-## 2. feat: Create database model, migrations and seed data
+## 2. [feat: Create database model, migrations and seed data](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/3)
 
 **Related requirements:** FR-02–FR-12.
 
@@ -64,7 +64,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Production-scale tuning, real compliance files and live operational data.
 
-## 3. feat: Implement authentication and role-based access
+## 3. [feat: Implement authentication and role-based access](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/4)
 
 **Related requirements:** FR-01, FR-12.
 
@@ -73,27 +73,33 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 **Scope**
 
 - Implement registration and login.
+- Limit public registration to `FREIGHT_OWNER` and `TRANSPORTER`.
+- Reject any public registration request that selects `ADMIN`.
+- Create MVP Administrator accounts through synthetic seed data.
 - Hash passwords with BCrypt.
 - Create and validate JWTs.
-- Support Freight Owner, Transporter and Admin roles.
+- Support login and authorisation for Freight Owner, Transporter and Admin roles.
 - Return consistent 401 and 403 responses.
 - Audit registration and relevant security actions.
 
 **Acceptance criteria**
 
 - [ ] Valid registration and login succeed.
+- [ ] Public registration accepts `FREIGHT_OWNER` and `TRANSPORTER`.
+- [ ] Public registration rejects `ADMIN`.
+- [ ] A synthetic seeded Administrator can log in.
 - [ ] Duplicate email is rejected.
 - [ ] Plain-text passwords are never stored or returned.
 - [ ] Invalid or missing tokens return 401.
 - [ ] Authenticated users without permission receive 403.
 
-**Tests required:** Registration, duplicate email, hashing, login, token validation and role-access tests.
+**Tests required:** Freight Owner and Transporter registration, rejected public Admin registration, seeded Admin login, duplicate email, hashing, token validation and role-access tests.
 
 **Documentation updates:** API contract, traceability, testing summary and Swagger security notes.
 
 **Out of scope:** OAuth, password recovery, MFA and external identity providers.
 
-## 4. feat: Implement user profiles and compliance metadata
+## 4. [feat: Implement user profiles and compliance metadata](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/5)
 
 **Related requirements:** FR-02, FR-10, FR-12.
 
@@ -120,7 +126,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Binary upload, external verification and certification.
 
-## 5. feat: Implement cargo load operations
+## 5. [feat: Implement cargo load operations](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/6)
 
 **Related requirements:** FR-03, FR-12.
 
@@ -147,7 +153,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Bulk imports, route optimisation and real geocoding.
 
-## 6. feat: Implement available truck operations
+## 6. [feat: Implement available truck operations](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/7)
 
 **Related requirements:** FR-04, FR-12.
 
@@ -174,7 +180,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Fleet telematics, maintenance management and bulk fleet imports.
 
-## 7. feat: Implement rule-based matchmaking
+## 7. [feat: Implement rule-based matchmaking](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/8)
 
 **Related requirements:** FR-05, FR-12.
 
@@ -203,7 +209,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** AI, machine learning, live distance services and advanced route optimisation.
 
-## 8. feat: Implement match acceptance, rejection and receipts
+## 8. [feat: Implement match acceptance, rejection and receipts](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/9)
 
 **Related requirements:** FR-06, FR-07, FR-12.
 
@@ -232,7 +238,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Production electronic signatures, payments and legal contract generation.
 
-## 9. feat: Implement mock tracking, ratings and disputes
+## 9. [feat: Implement mock tracking, ratings and disputes](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/10)
 
 **Related requirements:** FR-08, FR-09, FR-10, FR-12.
 
@@ -260,7 +266,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Live GPS, maps, notifications and automated dispute resolution.
 
-## 10. feat: Implement Admin controls and platform metrics
+## 10. [feat: Implement Admin controls and platform metrics](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/11)
 
 **Related requirements:** FR-10, FR-11, FR-12.
 
@@ -287,7 +293,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Advanced analytics, dashboards, exports and production monitoring.
 
-## 11. test: Add unit, integration and API error tests
+## 11. [test: Add unit, integration and API error tests](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/12)
 
 **Related requirements:** FR-01–FR-12.
 
@@ -314,7 +320,7 @@ GitHub CLI authentication was unavailable when this foundation was prepared. Cre
 
 **Out of scope:** Exhaustive performance, penetration, DAST and production load testing.
 
-## 12. chore: Add CI, final documentation and demo preparation
+## 12. [chore: Add CI, final documentation and demo preparation](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/issues/13)
 
 **Related requirements:** Verification and presentation evidence for FR-01–FR-12.
 

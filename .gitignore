@@ -23,6 +23,20 @@
 hs_err_pid*
 replay_pid*
 
+# Maven build output
+target/
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+.DS_Store
+
+# The Maven wrapper binary is intentionally versioned
+!.mvn/wrapper/maven-wrapper.jar
+
 # Local environment configuration
 .env
 .env.*

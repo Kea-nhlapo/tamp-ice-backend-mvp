@@ -4,7 +4,7 @@ This table records planned evidence only. No requirement is implemented yet.
 
 | Requirement ID | Requirement summary | Priority | Planned endpoint/service | Planned test evidence | Status |
 |---|---|---|---|---|---|
-| FR-01 | Role-based registration and login for Freight Owner, Transporter and Admin | Must | `/api/auth/register`, `/api/auth/login`; authentication service | Registration, hashing, authentication and role-access tests | Not started |
+| FR-01 | Public registration for Freight Owner and Transporter; login for all roles; seeded Admin accounts | Must | `/api/auth/register`, `/api/auth/login`; authentication service and synthetic Admin seed data | Registration, hashing, authentication, public Admin-registration rejection and role-access tests | Not started |
 | FR-02 | Basic user identity and compliance-document metadata | Must | `/api/users/me`; compliance service and admin compliance endpoint | Profile ownership, metadata validation and admin-decision tests | Not started |
 | FR-03 | Freight Owner can create and view cargo loads | Must | `/api/loads`; load service | Load creation, viewing, validation and role tests | Not started |
 | FR-04 | Transporter can create and view available trucks | Must | `/api/trucks`; truck service | Truck creation, viewing, validation and role tests | Not started |
