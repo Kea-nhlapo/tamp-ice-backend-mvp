@@ -1,6 +1,6 @@
-# Planned API Contract
+# API Contract
 
-This is a planning-level contract. Payload schemas, error fields and OpenAPI annotations will be finalised during implementation.
+Authentication is implemented. The remaining modules are planning-level contracts whose payload details will be finalised during implementation.
 
 ## Authentication
 
@@ -8,9 +8,11 @@ This is a planning-level contract. Payload schemas, error fields and OpenAPI ann
 
 **Purpose:** Register a Freight Owner or Transporter and exchange valid credentials for a JWT. Administrator accounts are created through synthetic seed data.
 
-**Expected main response:** Registration returns the created user's safe profile; login returns a token and basic identity information.
+**Expected main response:** Registration returns HTTP 201 with a JWT and safe identity details. Login returns HTTP 200 with the same response shape.
 
 **Important validation:** Email must be valid and unique, passwords must meet the implemented policy, and public registration must accept only `FREIGHT_OWNER` or `TRANSPORTER`. A request selecting `ADMIN` must be rejected. Passwords must never appear in responses.
+
+Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Successful registration and login create audit events without storing passwords or tokens.
 
 | Method | Endpoint | Planned use |
 |---|---|---|
