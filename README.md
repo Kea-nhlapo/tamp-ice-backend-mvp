@@ -40,7 +40,7 @@ Authentication, current-user profiles, compliance metadata, cargo loads, availab
 
 ## Current project status
 
-**Spring Boot scaffold in progress.** The Maven project builds with Java 21, starts with an in-memory H2 database, exposes a health endpoint and provides Swagger/OpenAPI documentation. Business endpoints, JWT authentication and domain persistence have not been implemented yet.
+**Database foundation implemented.** The Maven project builds with Java 21, starts with an in-memory H2 database, exposes a health endpoint and provides Swagger/OpenAPI documentation. Flyway creates the MVP schema and loads synthetic seed data. Business endpoints and JWT authentication have not been implemented yet.
 
 ## Setup
 
@@ -66,7 +66,16 @@ Swagger UI:
 http://localhost:8080/swagger-ui/index.html
 ```
 
-The default local setup uses an in-memory H2 database. PostgreSQL configuration will be added during database implementation.
+### Database and seed data
+
+The default local setup uses an in-memory H2 database. Flyway automatically runs the versioned migrations in `src/main/resources/db/migration` when the application starts.
+
+- `V1__create_mvp_schema.sql` creates the MVP tables, relationships, constraints and indexes.
+- `V2__seed_synthetic_data.sql` inserts reproducible synthetic users and sample records.
+- Restarting the application resets the in-memory H2 database.
+- PostgreSQL can be enabled with the `postgres` Spring profile after setting `DB_URL`, `DB_USERNAME` and `DB_PASSWORD`.
+
+All seed records are synthetic and must not be treated as real people or operational data. Real secrets must not be committed.
 
 ## Testing
 
@@ -80,6 +89,9 @@ The current scaffold includes:
 
 - A Spring application context test.
 - A health endpoint test that expects HTTP 200.
+- A migration and synthetic seed-data integration test.
+- A repository relationship integration test.
+- A database uniqueness-constraint integration test.
 
 The planned business-journey tests remain listed in the [Testing Summary](docs/testing-summary.md) and will be implemented with the related features.
 

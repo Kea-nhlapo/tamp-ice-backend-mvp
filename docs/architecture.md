@@ -25,7 +25,9 @@ Spring Data JPA repositories will provide entity persistence and focused queries
 
 ## Database layer
 
-PostgreSQL is planned for development and demonstration. Constraints, indexes, migrations and synthetic seed data will be added during implementation. H2 or another isolated database may be used for automated tests.
+PostgreSQL is the planned development and demonstration database, while the default local and automated-test configuration uses an isolated in-memory H2 database. Spring Data JPA maps the domain entities and relationships, and Hibernate validates them against the migrated schema.
+
+Flyway owns schema changes through versioned files in `src/main/resources/db/migration`. The first migration creates the MVP tables, foreign keys, constraints and indexes. The second migration loads reproducible synthetic seed users and sample records. Applied migrations must not be edited; later schema changes require a new migration.
 
 ## Security layer
 
