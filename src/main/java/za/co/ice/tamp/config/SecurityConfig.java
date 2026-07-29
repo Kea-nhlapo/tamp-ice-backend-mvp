@@ -48,6 +48,10 @@ public class SecurityConfig {
                                                                 "/v3/api-docs/**")
                                                 .permitAll()
                                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/loads")
+                                                .hasRole("FREIGHT_OWNER")
+                                                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/trucks")
+                                                .hasRole("TRANSPORTER")
                                                 .anyRequest().authenticated())
                                 .addFilterBefore(
                                                 jwtAuthenticationFilter,

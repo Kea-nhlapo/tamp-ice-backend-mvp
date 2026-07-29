@@ -1,6 +1,6 @@
 # API Contract
 
-Authentication is implemented. The remaining modules are planning-level contracts whose payload details will be finalised during implementation.
+The MVP endpoints below are implemented and available through Swagger. Responses use safe DTO-style JSON and validation errors use a consistent structured response.
 
 ## Authentication
 
@@ -14,7 +14,7 @@ Authentication is implemented. The remaining modules are planning-level contract
 
 Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Successful registration and login create audit events without storing passwords or tokens.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | POST | `/api/auth/register` | Register a Freight Owner or Transporter; public Admin registration is prohibited |
 | POST | `/api/auth/login` | Authenticate and obtain a JWT |
@@ -29,7 +29,7 @@ Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Suc
 
 **Important validation:** Users may act only on their own profile; document type and name or reference are required. Uploading real documents is outside scope.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | GET | `/api/users/me` | Read the current profile |
 | PUT | `/api/users/me` | Update allowed profile fields |
@@ -45,7 +45,7 @@ Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Suc
 
 **Important validation:** Origin, destination and cargo type are required; weight and volume must be positive; pickup start must precede pickup end; update requires ownership.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | POST | `/api/loads` | Create a load |
 | GET | `/api/loads` | List visible loads |
@@ -62,7 +62,7 @@ Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Suc
 
 **Important validation:** Truck type and location are required; capacity must be positive; availability start must precede availability end; update requires ownership.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | POST | `/api/trucks` | Create a truck |
 | GET | `/api/trucks` | List visible trucks |
@@ -79,7 +79,7 @@ Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Suc
 
 **Important validation:** Reject candidates with insufficient capacity, incompatible truck and cargo types, non-overlapping availability or a location that does not match the origin city or area.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | POST | `/api/loads/{loadId}/matches` | Generate match candidates |
 | GET | `/api/matches/{id}` | View an authorised match |
@@ -94,7 +94,7 @@ Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Suc
 
 **Important validation:** Only allowed state transitions may occur; repeated or conflicting decisions must be rejected; a receipt exists only for an accepted match.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | POST | `/api/matches/{id}/accept` | Accept a match |
 | POST | `/api/matches/{id}/reject` | Reject a match |
@@ -110,7 +110,7 @@ Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Suc
 
 **Important validation:** The match must be accepted, the actor must be authorised and status movement must follow the implemented progression.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | POST | `/api/matches/{id}/tracking-events` | Add the next mock event |
 | GET | `/api/matches/{id}/tracking-events` | List trip events |
@@ -125,7 +125,7 @@ Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Suc
 
 **Important validation:** Ratings are allowed only after completion, must target the other party and use a score from 1 to 5. Dispute reasons are required and access is limited to relevant parties or Administrators.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | POST | `/api/matches/{id}/ratings` | Submit a post-completion rating |
 | POST | `/api/matches/{id}/disputes` | Create a dispute |
@@ -140,7 +140,7 @@ Use Swagger's **Authorize** button to send a returned JWT as a Bearer token. Suc
 
 **Important validation:** Every endpoint must reject non-admin users. Status changes must use allowed values and create audit evidence.
 
-| Method | Endpoint | Planned use |
+| Method | Endpoint | Use |
 |---|---|---|
 | GET | `/api/admin/users` | List users |
 | PATCH | `/api/admin/users/{id}/compliance-status` | Approve or reject compliance |
