@@ -40,19 +40,48 @@ Authentication, current-user profiles, compliance metadata, cargo loads, availab
 
 ## Current project status
 
-**Repository foundation and planning only.** Application scaffolding, endpoints, persistence, security and automated tests have not started.
+**Spring Boot scaffold in progress.** The Maven project builds with Java 21, starts with an in-memory H2 database, exposes a health endpoint and provides Swagger/OpenAPI documentation. Business endpoints, JWT authentication and domain persistence have not been implemented yet.
 
 ## Setup
 
-**To be completed after project scaffolding.**
+Requirements:
 
-No installation commands are provided yet because the Spring Boot project does not exist.
+- Java 21
+
+Run the application from the repository root:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+Health check:
+
+```text
+http://localhost:8080/actuator/health
+```
+
+Swagger UI:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+The default local setup uses an in-memory H2 database. PostgreSQL configuration will be added during database implementation.
 
 ## Testing
 
-**To be completed during implementation.**
+Run the automated tests from the repository root:
 
-The planned coverage is recorded in the [Testing Summary](docs/testing-summary.md). No tests are currently claimed as implemented or run.
+```powershell
+.\mvnw.cmd test
+```
+
+The current scaffold includes:
+
+- A Spring application context test.
+- A health endpoint test that expects HTTP 200.
+
+The planned business-journey tests remain listed in the [Testing Summary](docs/testing-summary.md) and will be implemented with the related features.
 
 ## Documentation
 

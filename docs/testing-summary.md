@@ -2,6 +2,15 @@
 
 The following tests are planned. Actual results will be recorded only after implementation and execution.
 
+## Scaffold checks
+
+| Test ID | Area | Test description | Test type | Expected result | Actual result | Status |
+|---|---|---|---|---|---|---|
+| S-01 | Application | Spring application context loads | Integration | Application starts for the test | Application context loaded | Passed |
+| S-02 | Health | Health endpoint returns HTTP 200 | Integration | Health request succeeds | HTTP 200 returned | Passed |
+
+## Planned business tests
+
 | Test ID | Area | Test description | Test type | Expected result | Actual result | Status |
 |---|---|---|---|---|---|---|
 | T-01 | Authentication | Registration succeeds | Integration | User is created and a successful response is returned | Not available | Not run |
