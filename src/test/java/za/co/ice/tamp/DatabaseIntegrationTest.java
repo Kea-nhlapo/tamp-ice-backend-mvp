@@ -10,11 +10,23 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import za.co.ice.tamp.domain.Load;
+import za.co.ice.tamp.domain.Truck;
+import za.co.ice.tamp.domain.UserRole;
+import za.co.ice.tamp.repository.LoadRepository;
+import za.co.ice.tamp.repository.TruckRepository;
+
 @SpringBootTest
 class DatabaseIntegrationTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private LoadRepository loadRepository;
+
+    @Autowired
+    private TruckRepository truckRepository;
 
     @Test
     void migrationsCreateTablesAndSeedSyntheticUsers() {
@@ -33,23 +45,22 @@ class DatabaseIntegrationTest {
     }
 
     @Test
+    @Transactional
     void seededLoadsAndTrucksBelongToCorrectUserRoles() {
-        Integer validLoadOwners = jdbcTemplate.queryForObject("""
-                SELECT COUNT(*)
-                FROM cargo_loads load
-                JOIN users owner ON owner.id = load.owner_id
-                WHERE owner.role = 'FREIGHT_OWNER'
-                """, Integer.class);
+        Load load = loadRepository.findAll().get(0);
+        Truck truck = truckRepository.findAll().get(0);
 
-        Integer validTruckOwners = jdbcTemplate.queryForObject("""
-                SELECT COUNT(*)
-                FROM trucks truck
-                JOIN users transporter ON transporter.id = truck.transporter_id
-                WHERE transporter.role = 'TRANSPORTER'
-                """, Integer.class);
+        assertEquals(UserRole.FREIGHT_OWNER, load.getOwner().getRole());
+        assertEquals(UserRole.TRANSPORTER, truck.getTransporter().getRole());
+    }
 
-        assertEquals(1, validLoadOwners);
-        assertEquals(1, validTruckOwners);
+    @Test
+    @Transactional
+    void nonPositiveLoadWeightIsRejected() {
+        assertThrows(
+                DataIntegrityViolationException.class,
+                () -> jdbcTemplate.update("UPDATE cargo_loads SET weight = 0")
+        );
     }
 
     @Test
