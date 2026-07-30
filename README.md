@@ -96,6 +96,63 @@ Synthetic demonstration logins all use the password `Password123!`:
 - `transporter@tamp.test`
 - `admin@tamp.test`
 
+## Docker Compose
+
+Requirements:
+
+- Docker Engine
+- Docker Compose
+
+Create the local environment file:
+
+```bash
+cp .env.example .env
+```
+
+Replace `POSTGRES_PASSWORD` in `.env`, then generate and set a local JWT
+signing secret:
+
+```bash
+openssl rand -base64 32
+```
+
+Start the backend and PostgreSQL:
+
+```bash
+docker compose up --build
+```
+
+Once both services are healthy, open:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+Inspect service status and logs:
+
+```bash
+docker compose ps
+docker compose logs -f app
+```
+
+Stop the services while preserving PostgreSQL data:
+
+```bash
+docker compose down
+```
+
+The named `postgres-data` volume retains the database between starts. To reset
+all Docker-managed database data intentionally, stop the stack and remove that
+volume:
+
+```bash
+docker compose down --volumes
+```
+
+After any application restart, log in again before using protected endpoints.
+JWTs are accepted only while they are unexpired and were signed with the
+current `JWT_SECRET`.
+
 ## Testing
 
 Run the automated tests from the repository root:
