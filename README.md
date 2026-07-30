@@ -1,6 +1,6 @@
 # Truck Asset Matchmaking Platform (TAMP)
 
-TAMP is a planned backend MVP that connects Freight Owners with Transporters that have suitable truck capacity. Administrators will oversee users, compliance metadata, disputes, audit information and basic metrics.
+TAMP is a backend MVP that connects Freight Owners with Transporters that have suitable truck capacity. Administrators oversee users, compliance metadata, disputes, audit information and basic metrics.
 
 ## Assessment purpose
 
@@ -26,21 +26,21 @@ This repository is an individual Industrial Computing Engineering (ICE) backend 
 
 Public registration accepts only `FREIGHT_OWNER` and `TRANSPORTER`. The public endpoint must reject `ADMIN`; Administrator accounts are created through synthetic seed data for this MVP.
 
-## Planned technology stack
+## Technology stack
 
 Java 21, Spring Boot, Maven, PostgreSQL, Spring Data JPA, Spring Security, JWT authentication, Bean Validation, Swagger/OpenAPI, JUnit 5, Mockito, H2 for isolated automated tests and GitHub Actions.
 
-## Planned architecture
+## Architecture
 
 One layered Spring Boot application will expose REST endpoints through controllers, coordinate business rules in services and persist data through Spring Data JPA repositories. Security will use JWT authentication and role-based access control. See [Architecture](docs/architecture.md).
 
-## Planned API modules
+## API modules
 
 Authentication, current-user profiles, compliance metadata, cargo loads, available trucks, rule-based matching, match decisions, receipts, mock tracking, ratings, disputes and administration.
 
 ## Current project status
 
-**Authentication implemented.** The application supports registration, BCrypt password hashing, JWT login and role-based access. The remaining business endpoints are implemented in later feature work.
+**Backend MVP implemented for demonstration.** The application provides JWT authentication, role checks, profiles, compliance metadata, loads, trucks, rule-based matching, decisions, receipts, mock tracking, ratings, disputes, audit events and Admin metrics through Swagger.
 
 ## Setup
 
@@ -84,10 +84,17 @@ The default local setup uses an in-memory H2 database. Flyway automatically runs
 
 - `V1__create_mvp_schema.sql` creates the MVP tables, relationships, constraints and indexes.
 - `V2__seed_synthetic_data.sql` inserts reproducible synthetic users and sample records.
+- `V3__fix_synthetic_user_password_hash.sql` provides a valid BCrypt hash for the synthetic users.
 - Restarting the application resets the in-memory H2 database.
 - PostgreSQL can be enabled with the `postgres` Spring profile after setting `DB_URL`, `DB_USERNAME` and `DB_PASSWORD`.
 
 All seed records are synthetic and must not be treated as real people or operational data. Real secrets must not be committed.
+
+Synthetic demonstration logins all use the password `Password123!`:
+
+- `owner@tamp.test`
+- `transporter@tamp.test`
+- `admin@tamp.test`
 
 ## Testing
 
@@ -97,24 +104,16 @@ Run the automated tests from the repository root:
 .\mvnw.cmd test
 ```
 
-The current scaffold includes:
-
-- A Spring application context test.
-- A health endpoint test that expects HTTP 200.
-- A migration and synthetic seed-data integration test.
-- A repository relationship integration test.
-- A database uniqueness-constraint integration test.
-
-The planned business-journey tests remain listed in the [Testing Summary](docs/testing-summary.md) and will be implemented with the related features.
+The automated suite covers application startup, health, migrations, repository relationships, database constraints, authentication, role restrictions, API validation, all matching rules and the main match-to-completion journey.
 
 ## Documentation
 
 - [Solution Overview](docs/solution-overview.md)
 - [Architecture](docs/architecture.md)
 - [Requirements Traceability](docs/requirements-traceability.md)
-- [Planned API Contract](docs/api-contract.md)
+- [API Contract](docs/api-contract.md)
 - [Testing Summary](docs/testing-summary.md)
-- [Planned Demo Guide](docs/demo-guide.md)
+- [Demo Guide](docs/demo-guide.md)
 - [Known Limitations](docs/known-limitations.md)
 - [Two-Day Work Plan](docs/work-plan.md)
 
