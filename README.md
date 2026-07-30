@@ -78,6 +78,36 @@ Swagger UI:
 http://localhost:8080/swagger-ui/index.html
 ```
 
+### Docker
+
+Docker can run the API and PostgreSQL together.
+
+Requirements:
+
+- Docker Desktop with Docker Compose
+
+Create a local environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Open `.env` and replace the placeholder database password and JWT secret. The `.env` file is ignored by Git and must never be committed.
+
+Build and start both containers:
+
+```powershell
+docker compose up --build
+```
+
+Open Swagger at `http://localhost:8080/swagger-ui/index.html`. Stop the containers with:
+
+```powershell
+docker compose down
+```
+
+The PostgreSQL data is kept in a Docker volume. To deliberately remove that synthetic local data, use `docker compose down --volumes`.
+
 ### Database and seed data
 
 The default local setup uses an in-memory H2 database. Flyway automatically runs the versioned migrations in `src/main/resources/db/migration` when the application starts.
