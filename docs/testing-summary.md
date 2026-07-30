@@ -42,5 +42,6 @@ This table records the automated evidence executed for the MVP.
 | T-22 | Matching | Non-open load cannot generate new matches | Integration | Request is rejected with 409 | Conflict response returned | Passed |
 | T-23 | Ratings | Administrator cannot rate a trip | Security integration | Request is rejected with 403 | Forbidden response returned | Passed |
 | T-24 | Data integrity | Accepted load and truck cannot be edited | Integration | Both updates are rejected with 409 | Both conflict responses returned | Passed |
+| T-25 | Matching | Stale proposal cannot double-book a truck | Integration | Second acceptance is rejected with 409 | Conflict response returned | Passed |
 
 More integration tests may be added after the core end-to-end journey works.

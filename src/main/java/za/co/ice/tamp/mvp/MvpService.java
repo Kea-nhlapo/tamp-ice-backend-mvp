@@ -231,6 +231,11 @@ public class MvpService {
         if (match.getStatus() != MatchStatus.PROPOSED) {
             throw conflict("Match has already been decided");
         }
+        if (accept
+                && (match.getLoad().getStatus() != LoadStatus.OPEN
+                || match.getTruck().getStatus() != TruckStatus.AVAILABLE)) {
+            throw conflict("The load or truck is no longer available");
+        }
         match.setStatus(accept ? MatchStatus.ACCEPTED : MatchStatus.REJECTED);
         if (accept) {
             match.getLoad().setStatus(LoadStatus.MATCHED);

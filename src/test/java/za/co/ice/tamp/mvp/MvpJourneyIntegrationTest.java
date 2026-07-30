@@ -65,6 +65,29 @@ class MvpJourneyIntegrationTest {
     }
 
     @Test
+    void staleProposalCannotDoubleBookATruck() {
+        List<Map<String, Object>> firstProposals = service.generateMatches(OWNER, 1L);
+        Map<String, Object> secondLoad = service.createLoad(
+                OWNER, "Johannesburg", "Durban", "GENERAL",
+                new BigDecimal("1000"), new BigDecimal("10"), START, START.plusHours(8));
+        Long secondLoadId = ((Number) secondLoad.get("id")).longValue();
+        List<Map<String, Object>> secondProposals = service.generateMatches(OWNER, secondLoadId);
+
+        assertFalse(firstProposals.isEmpty());
+        assertFalse(secondProposals.isEmpty());
+        Long firstMatchId = ((Number) firstProposals.get(0).get("id")).longValue();
+        Long secondMatchId = ((Number) secondProposals.get(0).get("id")).longValue();
+
+        service.decide(OWNER, firstMatchId, true, "127.0.0.1", "JUnit");
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
+                () -> service.decide(
+                        OWNER, secondMatchId, true, "127.0.0.1", "JUnit"));
+
+        assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
+    }
+
+    @Test
     void nonOpenLoadCannotGenerateNewMatches() {
         acceptSeedMatch();
 

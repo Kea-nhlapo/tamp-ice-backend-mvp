@@ -48,6 +48,18 @@ Requirements:
 
 - Java 21
 
+Create a temporary Base64 JWT signing secret for the current PowerShell session:
+
+```powershell
+$secretBytes = New-Object byte[] 32
+$secretGenerator = [Security.Cryptography.RandomNumberGenerator]::Create()
+$secretGenerator.GetBytes($secretBytes)
+$secretGenerator.Dispose()
+$env:JWT_SECRET = [Convert]::ToBase64String($secretBytes)
+```
+
+This value is local to the terminal session. Never commit a real JWT secret or place it in a tracked file.
+
 Run the application from the repository root:
 
 ```powershell
