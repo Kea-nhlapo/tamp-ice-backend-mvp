@@ -26,6 +26,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import io.swagger.v3.oas.annotations.Operation;
 import za.co.ice.tamp.domain.ComplianceStatus;
 import za.co.ice.tamp.domain.DisputeStatus;
 import za.co.ice.tamp.domain.TrackingStatus;
@@ -41,17 +42,20 @@ public class MvpController {
         this.service = service;
     }
 
+    @Operation(summary = "Return the authenticated user's profile.")
     @GetMapping("/users/me")
     Map<String, Object> profile(Authentication auth) {
         return service.profile(auth.getName());
     }
 
+    @Operation(summary = "Update the authenticated user's profile.")
     @PutMapping("/users/me")
     Map<String, Object> updateProfile(
             Authentication auth, @Valid @RequestBody ProfileRequest request) {
         return service.updateProfile(auth.getName(), request.name());
     }
 
+    @Operation(summary = "Submit a compliance document for the authenticated user.")
     @PostMapping("/users/me/compliance-documents")
     @ResponseStatus(HttpStatus.CREATED)
     Map<String, Object> submitDocument(
@@ -60,6 +64,7 @@ public class MvpController {
                 auth.getName(), request.documentType(), request.documentReference());
     }
 
+    @Operation(summary = "Create a freight load.")
     @PostMapping("/loads")
     @ResponseStatus(HttpStatus.CREATED)
     Map<String, Object> createLoad(
@@ -69,16 +74,19 @@ public class MvpController {
                 request.weight(), request.volume(), request.pickupStart(), request.pickupEnd());
     }
 
+    @Operation(summary = "List loads available to the authenticated user.")
     @GetMapping("/loads")
     List<Map<String, Object>> loads(Authentication auth) {
         return service.listLoads(auth.getName());
     }
 
+    @Operation(summary = "Return a load by ID.")
     @GetMapping("/loads/{id}")
     Map<String, Object> load(Authentication auth, @PathVariable Long id) {
         return service.getLoad(auth.getName(), id);
     }
 
+    @Operation(summary = "Update a freight load.")
     @PutMapping("/loads/{id}")
     Map<String, Object> updateLoad(
             Authentication auth, @PathVariable Long id,
@@ -89,6 +97,7 @@ public class MvpController {
                 request.pickupStart(), request.pickupEnd());
     }
 
+    @Operation(summary = "Create an available truck.")
     @PostMapping("/trucks")
     @ResponseStatus(HttpStatus.CREATED)
     Map<String, Object> createTruck(
@@ -99,16 +108,19 @@ public class MvpController {
                 request.availabilityEnd());
     }
 
+    @Operation(summary = "List trucks available to the authenticated user.")
     @GetMapping("/trucks")
     List<Map<String, Object>> trucks(Authentication auth) {
         return service.listTrucks(auth.getName());
     }
 
+    @Operation(summary = "Return a truck by ID.")
     @GetMapping("/trucks/{id}")
     Map<String, Object> truck(Authentication auth, @PathVariable Long id) {
         return service.getTruck(auth.getName(), id);
     }
 
+    @Operation(summary = "Update an available truck.")
     @PutMapping("/trucks/{id}")
     Map<String, Object> updateTruck(
             Authentication auth, @PathVariable Long id,
@@ -119,17 +131,20 @@ public class MvpController {
                 request.availabilityEnd());
     }
 
+    @Operation(summary = "Generate eligible truck matches for a load.")
     @PostMapping("/loads/{loadId}/matches")
     List<Map<String, Object>> generateMatches(
             Authentication auth, @PathVariable Long loadId) {
         return service.generateMatches(auth.getName(), loadId);
     }
 
+    @Operation(summary = "Return a match by ID.")
     @GetMapping("/matches/{id}")
     Map<String, Object> match(Authentication auth, @PathVariable Long id) {
         return service.getMatch(auth.getName(), id);
     }
 
+    @Operation(summary = "Accept a proposed match.")
     @PostMapping("/matches/{id}/accept")
     Map<String, Object> accept(
             Authentication auth, @PathVariable Long id, HttpServletRequest request) {
@@ -138,6 +153,7 @@ public class MvpController {
                 request.getHeader("User-Agent"));
     }
 
+    @Operation(summary = "Reject a proposed match.")
     @PostMapping("/matches/{id}/reject")
     Map<String, Object> reject(
             Authentication auth, @PathVariable Long id, HttpServletRequest request) {
@@ -146,11 +162,13 @@ public class MvpController {
                 request.getHeader("User-Agent"));
     }
 
+    @Operation(summary = "Return the receipt for an accepted match.")
     @GetMapping("/matches/{id}/receipt")
     Map<String, Object> receipt(Authentication auth, @PathVariable Long id) {
         return service.receipt(auth.getName(), id);
     }
 
+    @Operation(summary = "Record a tracking event for a match.")
     @PostMapping("/matches/{id}/tracking-events")
     @ResponseStatus(HttpStatus.CREATED)
     Map<String, Object> addTracking(
@@ -161,11 +179,13 @@ public class MvpController {
                 request.latitude(), request.longitude());
     }
 
+    @Operation(summary = "List tracking events for a match.")
     @GetMapping("/matches/{id}/tracking-events")
     List<Map<String, Object>> tracking(Authentication auth, @PathVariable Long id) {
         return service.tracking(auth.getName(), id);
     }
 
+    @Operation(summary = "Submit a rating for a completed match.")
     @PostMapping("/matches/{id}/ratings")
     @ResponseStatus(HttpStatus.CREATED)
     Map<String, Object> rate(
@@ -174,6 +194,7 @@ public class MvpController {
         return service.rate(auth.getName(), id, request.score(), request.comment());
     }
 
+    @Operation(summary = "Open a dispute for a match.")
     @PostMapping("/matches/{id}/disputes")
     @ResponseStatus(HttpStatus.CREATED)
     Map<String, Object> dispute(
@@ -182,11 +203,13 @@ public class MvpController {
         return service.dispute(auth.getName(), id, request.reason());
     }
 
+    @Operation(summary = "List all platform users.")
     @GetMapping("/admin/users")
     List<Map<String, Object>> adminUsers() {
         return service.adminUsers();
     }
 
+    @Operation(summary = "Update a user's compliance status.")
     @PatchMapping("/admin/users/{id}/compliance-status")
     Map<String, Object> compliance(
             Authentication auth, @PathVariable Long id,
@@ -194,11 +217,13 @@ public class MvpController {
         return service.updateCompliance(auth.getName(), id, request.status());
     }
 
+    @Operation(summary = "List all platform disputes.")
     @GetMapping("/admin/disputes")
     List<Map<String, Object>> adminDisputes() {
         return service.adminDisputes();
     }
 
+    @Operation(summary = "Update a dispute's status.")
     @PatchMapping("/admin/disputes/{id}/status")
     Map<String, Object> disputeStatus(
             Authentication auth, @PathVariable Long id,
@@ -206,11 +231,13 @@ public class MvpController {
         return service.updateDispute(auth.getName(), id, request.status());
     }
 
+    @Operation(summary = "List platform audit events.")
     @GetMapping("/admin/audit-events")
     List<Map<String, Object>> audits() {
         return service.adminAudits();
     }
 
+    @Operation(summary = "Return platform activity metrics.")
     @GetMapping("/admin/metrics")
     Map<String, Object> metrics() {
         return service.metrics();
