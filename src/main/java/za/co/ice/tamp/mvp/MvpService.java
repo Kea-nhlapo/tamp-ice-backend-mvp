@@ -134,6 +134,9 @@ public class MvpService {
         User owner = requireRole(currentUser(email), UserRole.FREIGHT_OWNER);
         Load load = load(id);
         requireOwner(owner, load.getOwner());
+        if (load.getStatus() != LoadStatus.OPEN) {
+            throw conflict("Only open loads can be edited");
+        }
         requireWindow(pickupStart, pickupEnd);
         load.setOrigin(origin.trim());
         load.setDestination(destination.trim());
@@ -175,6 +178,9 @@ public class MvpService {
         User transporter = requireRole(currentUser(email), UserRole.TRANSPORTER);
         Truck truck = truck(id);
         requireOwner(transporter, truck.getTransporter());
+        if (truck.getStatus() != TruckStatus.AVAILABLE) {
+            throw conflict("Only available trucks can be edited");
+        }
         requireWindow(availableStart, availableEnd);
         truck.setType(type);
         truck.setCapacity(capacity);
@@ -189,8 +195,14 @@ public class MvpService {
         User owner = requireRole(currentUser(email), UserRole.FREIGHT_OWNER);
         Load load = load(loadId);
         requireOwner(owner, load.getOwner());
+        if (load.getStatus() != LoadStatus.OPEN) {
+            throw conflict("Only open loads can generate matches");
+        }
         List<Map<String, Object>> eligible = new ArrayList<>();
         for (Truck truck : trucks.findAll()) {
+            if (truck.getStatus() != TruckStatus.AVAILABLE) {
+                continue;
+            }
             MatchingRules.MatchEvaluation evaluation = matchingRules.evaluate(load, truck);
             if (evaluation.eligible()) {
                 Match match = matches.findByLoadIdAndTruckId(loadId, truck.getId())
@@ -275,7 +287,7 @@ public class MvpService {
     public Map<String, Object> rate(String email, Long matchId, int score, String comment) {
         User reviewer = currentUser(email);
         Match match = match(matchId);
-        requirePartyOrAdmin(reviewer, match);
+        requireParty(reviewer, match);
         if (ratings.existsByMatchIdAndReviewerId(matchId, reviewer.getId())) {
             throw conflict("You have already rated this trip");
         }
@@ -401,6 +413,17 @@ public class MvpService {
                 || user.getId().equals(match.getTruck().getTransporter().getId());
         if (!party) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not a party to this match");
+        }
+    }
+
+    private void requireParty(User user, Match match) {
+        boolean party = user.getId().equals(match.getLoad().getOwner().getId())
+                || user.getId().equals(match.getTruck().getTransporter().getId());
+        if (!party) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only trip parties can perform this action"
+            );
         }
     }
 

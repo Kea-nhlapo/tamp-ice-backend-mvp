@@ -38,5 +38,9 @@ This table records the automated evidence executed for the MVP.
 | T-18 | Security | Missing or invalid JWT is rejected | Security integration | Request is rejected with 401 | Both requests returned 401 | Passed |
 | T-19 | Security | Freight Owner cannot access an Admin route | Security integration | Request is rejected with 403 | Request returned 403 | Passed |
 | T-20 | Audit | Registration and login create audit records | Integration | Safe audit events are stored | Registration and login events stored | Passed |
+| T-21 | Matching | Matched truck cannot be proposed for another load | Integration | Unavailable truck is excluded | No match was returned | Passed |
+| T-22 | Matching | Non-open load cannot generate new matches | Integration | Request is rejected with 409 | Conflict response returned | Passed |
+| T-23 | Ratings | Administrator cannot rate a trip | Security integration | Request is rejected with 403 | Forbidden response returned | Passed |
+| T-24 | Data integrity | Accepted load and truck cannot be edited | Integration | Both updates are rejected with 409 | Both conflict responses returned | Passed |
 
 More integration tests may be added after the core end-to-end journey works.
