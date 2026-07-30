@@ -40,13 +40,25 @@ Authentication, current-user profiles, compliance metadata, cargo loads, availab
 
 ## Current project status
 
-**Database foundation implemented.** The Maven project builds with Java 21, starts with an in-memory H2 database, exposes a health endpoint and provides Swagger/OpenAPI documentation. Flyway creates the MVP schema and loads synthetic seed data. Business endpoints and JWT authentication have not been implemented yet.
+**Authentication implemented.** The application supports registration, BCrypt password hashing, JWT login and role-based access. The remaining business endpoints are implemented in later feature work.
 
 ## Setup
 
 Requirements:
 
 - Java 21
+
+Create a temporary Base64 JWT signing secret for the current PowerShell session:
+
+```powershell
+$secretBytes = New-Object byte[] 32
+$secretGenerator = [Security.Cryptography.RandomNumberGenerator]::Create()
+$secretGenerator.GetBytes($secretBytes)
+$secretGenerator.Dispose()
+$env:JWT_SECRET = [Convert]::ToBase64String($secretBytes)
+```
+
+This value is local to the terminal session. Never commit a real JWT secret or place it in a tracked file.
 
 Run the application from the repository root:
 

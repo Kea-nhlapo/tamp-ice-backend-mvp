@@ -13,9 +13,9 @@ The following tests are planned. Actual results will be recorded only after impl
 
 | Test ID | Area | Test description | Test type | Expected result | Actual result | Status |
 |---|---|---|---|---|---|---|
-| T-01 | Authentication | Registration succeeds | Integration | User is created and a successful response is returned | Not available | Not run |
-| T-02 | Authentication | Duplicate email fails | Integration | Conflict response; no duplicate user | Not available | Not run |
-| T-03 | Security | Password is not stored as plain text | Unit/integration | Stored hash differs from submitted password and BCrypt verifies it | Not available | Not run |
+| T-01 | Authentication | Registration succeeds | Integration | User is created and a successful response is returned | Freight Owner and Transporter registration succeeded | Passed |
+| T-02 | Authentication | Duplicate email fails | Integration | Conflict response; no duplicate user | Duplicate email was rejected | Passed |
+| T-03 | Security | Password is not stored as plain text | Unit/integration | Stored hash differs from submitted password and BCrypt verifies it | BCrypt hash stored and verified | Passed |
 | T-04 | Loads | Freight Owner can create a load | Integration | Valid load is persisted for its owner | Not available | Not run |
 | T-05 | Loads | Transporter cannot create a load | Security integration | Request is rejected with 403 | Not available | Not run |
 | T-06 | Loads | Invalid load weight is rejected | Validation integration | Request is rejected with 400 | Not available | Not run |
@@ -28,5 +28,15 @@ The following tests are planned. Actual results will be recorded only after impl
 | T-13 | Matching | Valid truck produces a match with reasons | Unit | Eligible match includes a score and readable reasons | Not available | Not run |
 | T-14 | Acceptance | Accepting a match creates a receipt and audit event | Integration | Match, receipt and audit event are saved atomically | Not available | Not run |
 | T-15 | Administration | Non-admin user cannot access Admin metrics | Security integration | Request is rejected with 403 | Not available | Not run |
+
+## Additional authentication tests
+
+| Test ID | Area | Test description | Test type | Expected result | Actual result | Status |
+|---|---|---|---|---|---|---|
+| T-16 | Authentication | Public Admin registration is rejected | Integration | Request is rejected with 400 | Admin selection was rejected | Passed |
+| T-17 | Authentication | Seeded Admin can log in | Integration | Valid seeded credentials return a JWT | JWT returned for synthetic Admin | Passed |
+| T-18 | Security | Missing or invalid JWT is rejected | Security integration | Request is rejected with 401 | Both requests returned 401 | Passed |
+| T-19 | Security | Freight Owner cannot access an Admin route | Security integration | Request is rejected with 403 | Request returned 403 | Passed |
+| T-20 | Audit | Registration and login create audit records | Integration | Safe audit events are stored | Registration and login events stored | Passed |
 
 More integration tests may be added after the core end-to-end journey works.

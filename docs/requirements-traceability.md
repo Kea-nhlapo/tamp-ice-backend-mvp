@@ -1,10 +1,10 @@
 # Requirements Traceability
 
-This table records planned evidence only. No requirement is implemented yet.
+This table links each requirement to its current implementation and test evidence.
 
 | Requirement ID | Requirement summary | Priority | Planned endpoint/service | Planned test evidence | Status |
 |---|---|---|---|---|---|
-| FR-01 | Public registration for Freight Owner and Transporter; login for all roles; seeded Admin accounts | Must | `/api/auth/register`, `/api/auth/login`; authentication service and synthetic Admin seed data | Registration, hashing, authentication, public Admin-registration rejection and role-access tests | Not started |
+| FR-01 | Public registration for Freight Owner and Transporter; login for all roles; seeded Admin accounts | Must | `/api/auth/register`, `/api/auth/login`; authentication service and synthetic Admin seed data | Registration, hashing, authentication, public Admin-registration rejection and role-access tests | Implemented |
 | FR-02 | Basic user identity and compliance-document metadata | Must | `/api/users/me`; compliance service and admin compliance endpoint | Profile ownership, metadata validation and admin-decision tests | Not started |
 | FR-03 | Freight Owner can create and view cargo loads | Must | `/api/loads`; load service | Load creation, viewing, validation and role tests | Not started |
 | FR-04 | Transporter can create and view available trucks | Must | `/api/trucks`; truck service | Truck creation, viewing, validation and role tests | Not started |
@@ -15,4 +15,4 @@ This table records planned evidence only. No requirement is implemented yet.
 | FR-09 | Parties can rate one another after completion | Should | `/api/matches/{id}/ratings`; rating service | Completion requirement, score range and party tests | Not started |
 | FR-10 | Admin manages users, compliance and disputed or flagged items | Must | `/api/admin/users`, compliance and dispute endpoints | Admin permission and state-update tests | Not started |
 | FR-11 | Admin views basic platform metrics | Must | `/api/admin/metrics`; metrics service | Aggregate-count and non-admin rejection tests | Not started |
-| FR-12 | Important actions are stored in an audit trail | Must | `/api/admin/audit-events`; audit service | Audit creation and admin-read tests | Not started |
+| FR-12 | Important actions are stored in an audit trail | Must | `/api/admin/audit-events`; audit service | Authentication audit creation is tested; admin-read tests remain planned | In progress |
