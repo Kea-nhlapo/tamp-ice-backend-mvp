@@ -1,54 +1,44 @@
 # Truck Asset Matchmaking Platform (TAMP)
 
-TAMP is a backend MVP that connects Freight Owners with Transporters that have suitable truck capacity. Administrators oversee users, compliance metadata, disputes, audit information and basic metrics.
+[![CI](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/actions/workflows/ci.yml/badge.svg)](https://github.com/Kea-nhlapo/tamp-ice-backend-mvp/actions/workflows/ci.yml)
 
-## Assessment purpose
+A REST API that matches freight owners who have a load to move with transporters who have a truck free. I built it on my own in July 2026 as the backend assessment for the Industrial Computing Engineering (ICE) programme, working to a two-day plan.
 
-This repository is an individual Industrial Computing Engineering (ICE) backend assessment. The objective is to demonstrate a clear, secure and testable API supporting the core freight matchmaking journey.
+It's backend only. Swagger UI is the way to try it.
 
-## MVP business journey
+## What it does
 
-1. A Freight Owner or Transporter registers and signs in. Administrator accounts come from synthetic MVP seed data.
-2. A Freight Owner posts a cargo load.
-3. A Transporter posts an available truck.
-4. The platform evaluates transparent matching rules and explains eligible matches.
-5. A party accepts or rejects a match, with the decision recorded.
-6. An accepted match produces a digital receipt.
-7. The trip advances through mock tracking statuses.
-8. The parties rate one another after completion.
-9. An Administrator reviews platform activity and exceptions.
+1. A freight owner or transporter registers and logs in and gets a JWT.
+2. The freight owner posts a cargo load. The transporter posts a truck that's available.
+3. The freight owner asks for matches on a load. Each candidate truck comes back with the reasons it qualifies.
+4. Either party accepts or rejects the match. Accepting it issues a digital receipt.
+5. The trip moves through mock tracking statuses until it's complete, then the two parties rate each other.
+6. An admin reviews users, compliance documents, disputes, audit events and platform metrics.
 
-## User roles
+There are three roles: `FREIGHT_OWNER`, `TRANSPORTER` and `ADMIN`. Public registration only accepts the first two. Admin accounts come from seed data.
 
-- **Freight Owner:** manages cargo loads, match decisions, tracking and ratings.
-- **Transporter:** manages truck availability, match decisions, tracking and ratings.
-- **Administrator:** manages users, compliance metadata, disputes, audit events and metrics.
+## How matching works
 
-Public registration accepts only `FREIGHT_OWNER` and `TRANSPORTER`. The public endpoint must reject `ADMIN`; Administrator accounts are created through synthetic seed data for this MVP.
+A truck is eligible for a load only when all four rules pass (`MatchingRules.java`):
 
-## Technology stack
+- **Capacity:** the truck's capacity is at least the load's weight.
+- **Truck type:** frozen or perishable cargo needs a refrigerated truck. Liquid or fuel needs a tanker, and machinery or construction material needs a flatbed. Anything else goes in a box truck.
+- **Timing:** the truck's availability window overlaps the load's pickup window.
+- **Location:** the truck's current location is the same as the load's origin. This compares city or area names, not real distances.
 
-Java 21, Spring Boot, Maven, PostgreSQL, Spring Data JPA, Spring Security, JWT authentication, Bean Validation, Swagger/OpenAPI, JUnit 5, Mockito, H2 for isolated automated tests and GitHub Actions.
+Every rule that passes is returned as a reason, so the API can explain a match instead of just returning a score.
 
-## Architecture
+## Stack
 
-One layered Spring Boot application will expose REST endpoints through controllers, coordinate business rules in services and persist data through Spring Data JPA repositories. Security will use JWT authentication and role-based access control. See [Architecture](docs/architecture.md).
+Java 21, Spring Boot 4, Spring Security with JWT (jjwt) and BCrypt, Spring Data JPA, Flyway, PostgreSQL (H2 in memory by default), springdoc OpenAPI, JUnit 5, Docker Compose and GitHub Actions.
 
-## API modules
+Most endpoints are in `MvpController`, and the business rules are in `MvpService`. Persistence goes through one Spring Data repository per entity. Security is stateless: a filter checks the JWT on each request, and role rules in `SecurityConfig` lock down admin routes, load creation and truck creation. [Architecture](docs/architecture.md) has more detail.
 
-Authentication, current-user profiles, compliance metadata, cargo loads, available trucks, rule-based matching, match decisions, receipts, mock tracking, ratings, disputes and administration.
+## Run it
 
-## Current project status
+You need Java 21.
 
-**Backend MVP implemented for demonstration.** The application provides JWT authentication, role checks, profiles, compliance metadata, loads, trucks, rule-based matching, decisions, receipts, mock tracking, ratings, disputes, audit events and Admin metrics through Swagger.
-
-## Setup
-
-Requirements:
-
-- Java 21
-
-Create a temporary Base64 JWT signing secret for the current PowerShell session:
+The app needs a Base64 JWT signing secret. In PowerShell, create one for the current session:
 
 ```powershell
 $secretBytes = New-Object byte[] 32
@@ -58,128 +48,78 @@ $secretGenerator.Dispose()
 $env:JWT_SECRET = [Convert]::ToBase64String($secretBytes)
 ```
 
-This value is local to the terminal session. Never commit a real JWT secret or place it in a tracked file.
+On Linux or macOS: `export JWT_SECRET=$(openssl rand -base64 32)`.
 
-Run the application from the repository root:
+Then start the app from the repository root:
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-Health check:
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- Health: http://localhost:8080/actuator/health
 
-```text
-http://localhost:8080/actuator/health
-```
+By default it uses an in-memory H2 database, which resets on every restart. Flyway creates the schema and loads synthetic seed data on startup (`src/main/resources/db/migration`).
 
-Swagger UI:
+### Demo logins
 
-```text
-http://localhost:8080/swagger-ui/index.html
-```
+All three use the password `Password123!`:
 
-### Database and seed data
+- `owner@tamp.test` (freight owner)
+- `transporter@tamp.test` (transporter)
+- `admin@tamp.test` (admin)
 
-The default local setup uses an in-memory H2 database. Flyway automatically runs the versioned migrations in `src/main/resources/db/migration` when the application starts.
+Log in with `POST /api/auth/login`, paste the token into Swagger's **Authorize** dialog, and follow the [Demo Guide](docs/demo-guide.md) to step through the full journey.
 
-- `V1__create_mvp_schema.sql` creates the MVP tables, relationships, constraints and indexes.
-- `V2__seed_synthetic_data.sql` inserts reproducible synthetic users and sample records.
-- `V3__fix_synthetic_user_password_hash.sql` provides a valid BCrypt hash for the synthetic users.
-- Restarting the application resets the in-memory H2 database.
-- PostgreSQL can be enabled with the `postgres` Spring profile after setting `DB_URL`, `DB_USERNAME` and `DB_PASSWORD`.
+### With PostgreSQL in Docker
 
-All seed records are synthetic and must not be treated as real people or operational data. Real secrets must not be committed.
-
-Synthetic demonstration logins all use the password `Password123!`:
-
-- `owner@tamp.test`
-- `transporter@tamp.test`
-- `admin@tamp.test`
-
-## Docker Compose
-
-Requirements:
-
-- Docker Engine
-- Docker Compose
-
-Create the local environment file:
+You need Docker with Compose.
 
 ```bash
 cp .env.example .env
 ```
 
-Replace `POSTGRES_PASSWORD` in `.env`, then generate and set a local JWT
-signing secret:
-
-```bash
-openssl rand -base64 32
-```
-
-Start the backend and PostgreSQL:
+In `.env`, set `POSTGRES_PASSWORD` and set `JWT_SECRET` to the output of `openssl rand -base64 32`. Then run:
 
 ```bash
 docker compose up --build
 ```
 
-Once both services are healthy, open:
+This starts PostgreSQL 17 and the app with the `postgres` profile. Swagger is on the same URL once both services are healthy. `docker compose down` keeps the data in the `postgres-data` volume, and `docker compose down --volumes` wipes it.
 
-```text
-http://localhost:8080/swagger-ui/index.html
-```
+To point a local run at your own PostgreSQL instead, use the `postgres` Spring profile and set `DB_URL`, `DB_USERNAME` and `DB_PASSWORD`.
 
-Inspect service status and logs:
+Tokens expire after an hour, and a restart with a new `JWT_SECRET` makes old tokens invalid, so log in again after restarting.
 
-```bash
-docker compose ps
-docker compose logs -f app
-```
-
-Stop the services while preserving PostgreSQL data:
-
-```bash
-docker compose down
-```
-
-The named `postgres-data` volume retains the database between starts. To reset
-all Docker-managed database data intentionally, stop the stack and remove that
-volume:
-
-```bash
-docker compose down --volumes
-```
-
-After any application restart, log in again before using protected endpoints.
-JWTs are accepted only while they are unexpired and were signed with the
-current `JWT_SECRET`.
-
-## Testing
-
-Run the automated tests from the repository root:
+## Tests
 
 ```powershell
 .\mvnw.cmd test
 ```
 
-The automated suite covers application startup, health, migrations, repository relationships, database constraints, authentication, role restrictions, API validation, all matching rules and the main match-to-completion journey.
+There are 31 tests across 9 classes. They run against H2 and cover:
 
-## Documentation
+- startup, health and the OpenAPI document
+- the Flyway migrations and database constraints
+- registration and login, including the rule that the public endpoint rejects `ADMIN`
+- role restrictions on protected routes
+- every matching rule
+- the full journey from posting a load to a completed, rated trip
+- guards against double-booking a truck and against editing a load or truck once its match is accepted
+
+CI runs `./mvnw verify` on every push and pull request to `main`.
+
+## Limits
+
+This is an assessment MVP, so a lot is mocked or left out on purpose. Compliance documents are metadata only and tracking is simulated. There are no payments, GPS, notifications or frontend, and it isn't deployed anywhere. All data is synthetic. The full list is in [Known Limitations](docs/known-limitations.md).
+
+## Docs
 
 - [Solution Overview](docs/solution-overview.md)
 - [Architecture](docs/architecture.md)
-- [Requirements Traceability](docs/requirements-traceability.md)
 - [API Contract](docs/api-contract.md)
+- [Requirements Traceability](docs/requirements-traceability.md)
 - [Testing Summary](docs/testing-summary.md)
 - [Demo Guide](docs/demo-guide.md)
 - [Known Limitations](docs/known-limitations.md)
 - [Two-Day Work Plan](docs/work-plan.md)
-
-## Scope boundaries
-
-The MVP excludes a frontend, microservices, external GPS, payments, messaging integrations, production signatures, AI matching, route optimisation and production deployment infrastructure. Swagger/OpenAPI will be the primary demonstration interface.
-
-All project and demonstration data will be synthetic or mock data. Real personal or operational data must not be used.
-
-## Deadline
-
-Submission and demonstration deadline: **Thursday, 30 July 2026**.
